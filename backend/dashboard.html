@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TrustBank - Admin Dashboard</title>
+</head>
+<body>
+    <h1>Admin Dashboard</h1>
+
+    <h2>Manage User Accounts</h2>
+
+    <!-- Form to add a new user -->
+    <form id="userForm">
+        <input type="text" id="username" placeholder="Username" required>
+        <input type="text" id="DOB" placeholder="DOB (MM/DD/YYYY)" required>
+        <input type="text" id="SSN" placeholder="SSN" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="text" id="Balance" placeholder="Balance" required>
+        <button type="submit">Add User</button>
+    </form>
+
+    <h3>Current Users</h3>
+    <table border="1" id="userTable">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>DOB</th>
+                <th>SSN</th>
+                <th>Email</th>
+                <th>Balance</th>
+                <th>Actions</th> <!-- <<=== This was missing -->
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Users will be dynamically added here -->
+        </tbody>
+    </table>
+
+    <br>
+    <a href="index.html">Logout</a>
+
+    <script>
+        const userForm = document.getElementById('userForm');
+        const userTableBody = document.querySelector('#userTable tbody');
+
+        let users = [];
+
+        userForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const dob = document.getElementById('DOB').value.trim();
+            const ssn = document.getElementById('SSN').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const balance = document.getElementById('Balance').value.trim();
+
+            if (username && dob && ssn && email && balance) {
+                users.push({ username, dob, ssn, email, balance });
+                renderUsers();
+                userForm.reset();
+            }
+        });
+
+        function renderUsers() {
+            userTableBody.innerHTML = '';
+            users.forEach((user, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.username}</td>
+                    <td>${user.dob}</td>
+                    <td>${user.ssn}</td>
+                    <td>${user.email}</td>
+                    <td>${user.balance}</td>
+                    <td>
+                        <button onclick="editUser(${index})">Edit</button>
+                        <button onclick="deleteUser(${index})">Delete</button>
+                    </td>
+                `;
+                userTableBody.appendChild(row);
+            });
+        }
+
+        function editUser(index) {
+            const user = users[index];
+            const newUsername = prompt("Edit Username:", user.username);
+            const newDOB = prompt("Edit DOB:", user.dob);
+            const newSSN = prompt("Edit SSN:", user.ssn);
+            const newEmail = prompt("Edit Email:", user.email);
+            const newBalance = prompt("Edit Balance:", user.balance);
+
+            if (newUsername && newDOB && newSSN && newEmail && newBalance) {
+                users[index] = {
+                    username: newUsername.trim(),
+                    dob: newDOB.trim(),
+                    ssn: newSSN.trim(),
+                    email: newEmail.trim(),
+                    balance: newBalance.trim()
+                };
+                renderUsers();
+            }
+        }
+
+        function deleteUser(index) {
+            if (confirm('Are you sure you want to delete this user?')) {
+                users.splice(index, 1);
+                renderUsers();
+            }
+        }
+    </script>
+</body>
+</html>
